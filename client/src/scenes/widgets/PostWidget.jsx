@@ -4,14 +4,7 @@ import {
   FavoriteOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
-import {
-  Box,
-  Divider,
-  IconButton,
-  IconsButton,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Box, Divider, IconButton, Typography, useTheme } from '@mui/material';
 import FlexBetween from 'components/FlexBetween';
 import Freind from 'components/Freind';
 import WidgetWrapper from 'components/WidgetWrapper';
@@ -29,6 +22,7 @@ const PostWidget = ({
   userPicturePath,
   likes,
   comments,
+  createdAt,
 }) => {
   const [isComments, setIsComments] = useState(false);
 
@@ -62,6 +56,7 @@ const PostWidget = ({
         name={name}
         subtitle={location}
         userPicturePath={userPicturePath}
+        createdAt={createdAt}
       />
       <Typography color={main} sx={{ mt: '1rem' }}>
         {description}

@@ -6,7 +6,7 @@ import FlexBetween from './FlexBetween';
 import UserImage from './UserImage';
 import { useNavigate } from 'react-router-dom';
 
-const Freind = ({ freindId, name, subtitle, userPicturePath }) => {
+const Freind = ({ freindId, name, subtitle, userPicturePath, createdAt }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => {
@@ -68,6 +68,16 @@ const Freind = ({ freindId, name, subtitle, userPicturePath }) => {
           </Typography>
           <Typography color={medium} fontSize='0.75rem'>
             {subtitle}
+          </Typography>
+          <Typography>
+            {new Date(createdAt).toLocaleString(undefined, {
+              hour: 'numeric',
+              minute: 'numeric',
+              second: 'numeric',
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+            })}
           </Typography>
         </Box>
       </FlexBetween>
