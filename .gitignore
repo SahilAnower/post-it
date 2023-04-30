@@ -1,0 +1,5 @@
+/client/node_modules
+
+/server/node_modules
+/server/.env
+/server/vlcsnap-2023-04-05-19h05m37s581.png
