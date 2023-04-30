@@ -9,15 +9,10 @@ import User from '../models/User.js';
 
 export const register = async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      picturePath,
-      location,
-      occupation,
-    } = req.body;
+    const { firstName, lastName, email, password, location, occupation } =
+      req.body;
+
+    const picturePath = req.file.filename;
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -38,7 +33,7 @@ export const register = async (req, res) => {
       // same to do for impressions
     });
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    res.status(201).json({});
     // sending the new user in json with status code 201.
   } catch (err) {
     res.status(500).json({ error: err.message });
