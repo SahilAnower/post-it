@@ -15,6 +15,8 @@ import { useDispatch } from 'react-redux';
 import { setLogin } from 'state';
 import Dropzone from 'react-dropzone';
 import FlexBetween from 'components/FlexBetween';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required('required'),
@@ -61,37 +63,49 @@ const Form = () => {
     formData.append('picturePath', values.picture.name);
     // console.log(values.picture);
     // console.log(formData);
-    const savedUserResponse = await fetch(
-      'http://localhost:3001/auth/register',
-      {
-        method: 'POST',
-        body: formData,
+    try {
+      const savedUserResponse = await fetch(
+        'http://localhost:3001/auth/register',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      const savedUser = await savedUserResponse.json();
+      onSubmitProps.resetForm();
+      toast.success('Registered Successfully!');
+      if (savedUser) {
+        setPageType('login');
       }
-    );
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
-    if (savedUser) {
-      setPageType('login');
+    } catch (err) {
+      toast.error(`Something went wrong! 😥 Error: ${err}`);
     }
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch('http://localhost:3001/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(values),
-    });
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
-      );
-
-      navigate('/home');
+    try {
+      const loggedInResponse = await fetch('http://localhost:3001/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+      const loggedIn = await loggedInResponse.json();
+      if (loggedIn.msg) {
+        return toast.error(`Something went wrong! 😥 Error: ${loggedIn.msg}`);
+      }
+      onSubmitProps.resetForm();
+      if (loggedIn) {
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        navigate('/home');
+        toast.success('Login Successfully!');
+      }
+    } catch (err) {
+      toast.error(`Something went wrong! 😥 Error: ${err}`);
     }
   };
 
