@@ -69,16 +69,18 @@ const Freind = ({ freindId, name, subtitle, userPicturePath, createdAt }) => {
           <Typography color={medium} fontSize='0.75rem'>
             {subtitle}
           </Typography>
-          <Typography>
-            {new Date(createdAt).toLocaleString(undefined, {
-              hour: 'numeric',
-              minute: 'numeric',
-              second: 'numeric',
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-            })}
-          </Typography>
+          {createdAt && (
+            <Typography color={primaryDark} fontSize='0.6rem'>
+              {new Date(createdAt).toLocaleString(undefined, {
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+              })}
+            </Typography>
+          )}
         </Box>
       </FlexBetween>
       {!(_id === freindId) && (
