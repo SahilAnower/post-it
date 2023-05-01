@@ -4,7 +4,7 @@ import {
   LocationOnOutlined,
   WorkOutlineOutlined,
 } from '@mui/icons-material';
-import { Box, Typography, Divider, useTheme } from '@mui/material';
+import { Box, Typography, Divider, useTheme, Popover } from '@mui/material';
 import UserImage from 'components/UserImage';
 import FlexBetween from 'components/FlexBetween';
 import WidgetWrapper from 'components/WidgetWrapper';
@@ -20,6 +20,18 @@ const UserWidget = ({ userId, picturePath }) => {
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   // console.log(picturePath);
 
@@ -54,18 +66,21 @@ const UserWidget = ({ userId, picturePath }) => {
   return (
     <WidgetWrapper>
       {/* FIRST ROW */}
-      <FlexBetween
-        gap='0.5rem'
-        pb='1.1rem'
-        onClick={() => navigate(`/profile/${userId}`)}
-      >
+      <FlexBetween gap='0.5rem' pb='1.1rem'>
         <FlexBetween gap='1rem'>
           <UserImage image={picturePath} />
           <Box>
             <Typography
+              aria-owns={open ? 'mouse-over-popover' : undefined}
+              aria-haspopup='true'
+              onMouseEnter={handlePopoverOpen}
+              onMouseLeave={handlePopoverClose}
               variant='h4'
               color={dark}
               fontWeight='500'
+              onClick={() => {
+                navigate(`/profile/${userId}`);
+              }}
               sx={{
                 '&:hover': {
                   color: palette.primary.light,
@@ -75,6 +90,26 @@ const UserWidget = ({ userId, picturePath }) => {
             >
               {firstName} {lastName}
             </Typography>
+            <Popover
+              id='mouse-over-popover'
+              sx={{
+                pointerEvents: 'none',
+              }}
+              open={open}
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              onClose={handlePopoverClose}
+              disableRestoreFocus
+            >
+              <Typography sx={{ p: 1 }}>My timeline⌛</Typography>
+            </Popover>
             <Typography color={medium}>{freinds.length} freinds</Typography>
           </Box>
         </FlexBetween>

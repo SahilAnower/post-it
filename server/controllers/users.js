@@ -11,6 +11,28 @@ export const getUser = async (req, res) => {
   }
 };
 
+// get all users in the searchbar
+export const getAllUsers = async (req, res) => {
+  try {
+    let searchWord = req.query.search;
+    const { id } = req.params;
+    const keyword = searchWord
+      ? {
+          $or: [
+            { firstName: { $regex: searchWord, $options: 'i' } },
+            { lastName: { $regex: searchWord, $options: 'i' } },
+            { email: { $regex: searchWord, $options: 'i' } },
+          ],
+        }
+      : {};
+
+    const users = await User.find(keyword).find({ _id: { $ne: id } });
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+
 export const getUserFreinds = async (req, res) => {
   try {
     const { id } = req.params;

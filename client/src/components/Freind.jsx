@@ -10,7 +10,7 @@ const Freind = ({ freindId, name, subtitle, userPicturePath, createdAt }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => {
-    console.log(state.user);
+    // console.log(state.user);
     return state.user;
   });
   const token = useSelector((state) => state.token);
@@ -49,6 +49,8 @@ const Freind = ({ freindId, name, subtitle, userPicturePath, createdAt }) => {
         <UserImage image={userPicturePath} size='55px' />
         <Box
           onClick={() => {
+            // not able to go to profile page when you are clicking on own.
+            if (_id === freindId) return;
             navigate(`/profile/${freindId}`);
             navigate(0);
           }}
