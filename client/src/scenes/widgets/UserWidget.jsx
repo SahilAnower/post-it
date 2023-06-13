@@ -11,6 +11,7 @@ import WidgetWrapper from 'components/WidgetWrapper';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getBackendUrl } from 'getBackendUrl';
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
@@ -33,10 +34,12 @@ const UserWidget = ({ userId, picturePath }) => {
 
   const open = Boolean(anchorEl);
 
+  const backendUrl = getBackendUrl();
+
   // console.log(picturePath);
 
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
+    const response = await fetch(`${backendUrl}/users/${userId}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     });

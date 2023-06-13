@@ -12,12 +12,13 @@ export const register = async (req, res) => {
     const { firstName, lastName, email, password, location, occupation } =
       req.body;
 
-    const picturePath = req.file.filename;
+    let picturePath = '';
+    if (req.file) picturePath = req.file.filename;
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     // for storing the hash password
-
+    // console.log('here');
     const newUser = new User({
       firstName,
       lastName,
@@ -33,7 +34,8 @@ export const register = async (req, res) => {
       // same to do for impressions
     });
     const savedUser = await newUser.save();
-    res.status(201).json({});
+    // console.log(savedUser);
+    res.status(201).json(savedUser);
     // sending the new user in json with status code 201.
   } catch (err) {
     res.status(500).json({ error: err.message });

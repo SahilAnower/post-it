@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 // global state which would be available in our whole application, and we don't need to pass state props here and there.
 const initialState = {
-  mode: 'light',
+  mode: 'dark',
   user: null,
   token: null,
   posts: [],

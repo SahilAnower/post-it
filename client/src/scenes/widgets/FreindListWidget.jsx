@@ -1,6 +1,7 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import Freind from 'components/Freind';
 import WidgetWrapper from 'components/WidgetWrapper';
+import { getBackendUrl } from 'getBackendUrl';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFreinds } from 'state';
@@ -11,9 +12,11 @@ const FreindListWidget = ({ userId }) => {
   const token = useSelector((state) => state.token);
   const freinds = useSelector((state) => state.user.freinds);
 
+  const backendUrl = getBackendUrl()
+
   const getFreinds = async () => {
     const response = await fetch(
-      `http:localhost:3001/users/${userId}/freinds`,
+      `${backendUrl}/users/${userId}/freinds`,
       {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },

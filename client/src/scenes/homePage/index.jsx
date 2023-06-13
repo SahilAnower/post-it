@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { setFreinds } from 'state';
 import AdvertWidget from 'scenes/widgets/AdvertWidget';
 import FreindListWidget from 'scenes/widgets/FreindListWidget';
+import { getBackendUrl } from 'getBackendUrl';
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery('(min-width:1000px)');
@@ -16,18 +17,17 @@ const HomePage = () => {
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
 
+  const backendUrl = getBackendUrl();
+
   useEffect(() => {
     const freindListDepict = async () => {
-      const response = await fetch(
-        `http://localhost:3001/users/${_id}/freinds`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await fetch(`${backendUrl}/users/${_id}/freinds`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       const data = await response.json();
       dispatch(setFreinds({ freinds: data }));
     };

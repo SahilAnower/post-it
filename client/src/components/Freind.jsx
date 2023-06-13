@@ -5,6 +5,7 @@ import { setFreinds } from 'state';
 import FlexBetween from './FlexBetween';
 import UserImage from './UserImage';
 import { useNavigate } from 'react-router-dom';
+import { getBackendUrl } from 'getBackendUrl';
 
 const Freind = ({ freindId, name, subtitle, userPicturePath, createdAt }) => {
   const dispatch = useDispatch();
@@ -28,9 +29,11 @@ const Freind = ({ freindId, name, subtitle, userPicturePath, createdAt }) => {
       ? freinds.find((freind) => freind._id === freindId)
       : false;
 
+  const backendUrl = getBackendUrl()
+
   const patchFreind = async () => {
     const response = await fetch(
-      `http://localhost:3001/users/${_id}/${freindId}`,
+      `${backendUrl}/users/${_id}/${freindId}`,
       {
         method: 'PATCH',
         headers: {

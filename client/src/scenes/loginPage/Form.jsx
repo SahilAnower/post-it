@@ -17,6 +17,7 @@ import Dropzone from 'react-dropzone';
 import FlexBetween from 'components/FlexBetween';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getBackendUrl } from 'getBackendUrl';
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required('required'),
@@ -48,6 +49,8 @@ const initialValuesLogin = {
   password: '',
 };
 
+const backendUrl = getBackendUrl();
+
 const Form = () => {
   const [pageType, setPageType] = useState('login');
   const { palette } = useTheme();
@@ -63,14 +66,12 @@ const Form = () => {
     formData.append('picturePath', values.picture.name);
     // console.log(values.picture);
     // console.log(formData);
+    // console.log(backendUrl);
     try {
-      const savedUserResponse = await fetch(
-        'http://localhost:3001/auth/register',
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+      const savedUserResponse = await fetch(`${backendUrl}/auth/register`, {
+        method: 'POST',
+        body: formData,
+      });
       const savedUser = await savedUserResponse.json();
       onSubmitProps.resetForm();
       toast.success('Registered Successfully!');
@@ -84,7 +85,7 @@ const Form = () => {
 
   const login = async (values, onSubmitProps) => {
     try {
-      const loggedInResponse = await fetch('http://localhost:3001/auth/login', {
+      const loggedInResponse = await fetch(`${backendUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
@@ -110,6 +111,7 @@ const Form = () => {
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
+    // e.preventDefault();
     if (isLogin) await login(values, onSubmitProps);
     if (isRegister) await register(values, onSubmitProps);
   };
@@ -130,7 +132,12 @@ const Form = () => {
         setFieldValue,
         resetForm,
       }) => (
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
           <Box
             display='grid'
             gap='30px'

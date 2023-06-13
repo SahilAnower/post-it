@@ -38,8 +38,8 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+// app.use(helmet());
+// app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 // This line of code sets the Cross-Origin Resource Policy (CORP) header in HTTP responses sent by the application using the Helmet middleware in Node.js.
 app.use(morgan('common'));
 // By using the morgan middleware with the "common" format, you can easily log HTTP requests in a standardized format, making it easier to analyze and troubleshoot the application's performance and security.
@@ -74,13 +74,13 @@ app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 
 // mongoose setup
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 3001;
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
     app.listen(PORT, () => {
       console.log('DB connected');
-      console.log(`Server Port: ${PORT}`);
+      console.log(`Server up and running: http://localhost:${PORT}`);
     });
   })
   .catch((err) => console.log(`${err} did not connect`));

@@ -6,6 +6,7 @@ import Navbar from 'scenes/navbar';
 import FreindListWidget from 'scenes/widgets/FreindListWidget';
 import UserWidget from 'scenes/widgets/UserWidget';
 import PostsWidget from 'scenes/widgets/PostsWidget';
+import { getBackendUrl } from 'getBackendUrl';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -13,8 +14,10 @@ const ProfilePage = () => {
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery('(min-width:1000px)');
 
+  const backendUrl = getBackendUrl();
+
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
+    const response = await fetch(`${backendUrl}/users/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
