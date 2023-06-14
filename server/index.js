@@ -16,6 +16,7 @@ import postRoutes from './routes/posts.js';
 import { register } from './controllers/auth.js';
 import { createPost } from './controllers/posts.js';
 import { verifyToken } from './middleware/auth.js';
+import { checkCaptcha } from './middleware/checkCaptcha.js';
 // Configurations
 
 const __filename = fileURLToPath(import.meta.url);
@@ -65,11 +66,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // routes with files
-app.post('/auth/register', upload.single('picture'), register);
+app.post('/auth/register', checkCaptcha, upload.single('picture'), register);
 app.post('/posts', verifyToken, upload.single('picture'), createPost);
 
 // routes
-app.use('/auth', authRoutes);
+app.use('/auth', checkCaptcha, authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 

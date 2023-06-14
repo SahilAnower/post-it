@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Box,
   Button,
@@ -18,6 +18,8 @@ import FlexBetween from 'components/FlexBetween';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getBackendUrl } from 'getBackendUrl';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { useSelector } from 'react-redux';
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required('required'),
@@ -54,16 +56,21 @@ const backendUrl = getBackendUrl();
 const Form = () => {
   const [pageType, setPageType] = useState('login');
   const { palette } = useTheme();
+  const mode = useSelector((state) => state.mode);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery('(min-width:600px)');
   const isLogin = pageType === 'login';
   const isRegister = pageType === 'register';
 
+  const captchaRef = useRef(null);
+
   const register = async (values, onSubmitProps) => {
+    // console.log(values);
     const formData = new FormData();
     for (let value in values) formData.append(value, values[value]);
     formData.append('picturePath', values.picture.name);
+    // formData.append('token', token);
     // console.log(values.picture);
     // console.log(formData);
     // console.log(backendUrl);
@@ -112,6 +119,10 @@ const Form = () => {
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     // e.preventDefault();
+    const token = captchaRef.current.getValue();
+    captchaRef.current.reset();
+    values['token'] = token;
+    // console.log(values);
     if (isLogin) await login(values, onSubmitProps);
     if (isRegister) await register(values, onSubmitProps);
   };
@@ -247,6 +258,11 @@ const Form = () => {
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
               sx={{ gridColumn: 'span 4' }}
+            />
+            <ReCAPTCHA
+              sitekey={process.env.REACT_APP_SITE_KEY}
+              theme={mode}
+              ref={captchaRef}
             />
           </Box>
           {/* Buttons */}
