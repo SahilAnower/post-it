@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -63,23 +64,25 @@ const Form = () => {
   const isLogin = pageType === 'login';
   const isRegister = pageType === 'register';
 
-  const captchaRef = useRef(null);
+  const captchaRef = React.createRef();
 
-  const register = async (values, onSubmitProps) => {
-    // console.log(values);
+  const register = async (values, onSubmitProps, token) => {
     const formData = new FormData();
     for (let value in values) formData.append(value, values[value]);
     formData.append('picturePath', values.picture.name);
-    // formData.append('token', token);
-    // console.log(values.picture);
-    // console.log(formData);
-    // console.log(backendUrl);
+
     try {
       const savedUserResponse = await fetch(`${backendUrl}/auth/register`, {
         method: 'POST',
         body: formData,
+        headers: { Authorization: `Bearer ${token}` },
       });
       const savedUser = await savedUserResponse.json();
+      if (savedUser.error) {
+        return toast.error(
+          `Something went wrong! 😥 Error: ${savedUser.error}`
+        );
+      }
       onSubmitProps.resetForm();
       toast.success('Registered Successfully!');
       if (savedUser) {
@@ -90,16 +93,21 @@ const Form = () => {
     }
   };
 
-  const login = async (values, onSubmitProps) => {
+  const login = async (values, onSubmitProps, token) => {
     try {
       const loggedInResponse = await fetch(`${backendUrl}/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(values),
       });
       const loggedIn = await loggedInResponse.json();
-      if (loggedIn.msg) {
-        return toast.error(`Something went wrong! 😥 Error: ${loggedIn.msg}`);
+      if (loggedIn.msg || loggedIn.error) {
+        return toast.error(
+          `Something went wrong! 😥 Error: ${loggedIn.msg || loggedIn.error}`
+        );
       }
       onSubmitProps.resetForm();
       if (loggedIn) {
@@ -118,13 +126,10 @@ const Form = () => {
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    // e.preventDefault();
     const token = captchaRef.current.getValue();
     captchaRef.current.reset();
-    values['token'] = token;
-    // console.log(values);
-    if (isLogin) await login(values, onSubmitProps);
-    if (isRegister) await register(values, onSubmitProps);
+    if (isLogin) await login(values, onSubmitProps, token);
+    if (isRegister) await register(values, onSubmitProps, token);
   };
 
   return (
@@ -259,11 +264,13 @@ const Form = () => {
               helperText={touched.password && errors.password}
               sx={{ gridColumn: 'span 4' }}
             />
-            <ReCAPTCHA
-              sitekey={process.env.REACT_APP_SITE_KEY}
-              theme={mode}
-              ref={captchaRef}
-            />
+            <Box width='100%' backgroundColor={palette.background.alt} p='1rem'>
+              <ReCAPTCHA
+                sitekey={process.env.REACT_APP_SITE_KEY}
+                theme={mode}
+                ref={captchaRef}
+              />
+            </Box>
           </Box>
           {/* Buttons */}
           <Box>

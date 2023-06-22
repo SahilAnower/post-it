@@ -1,7 +1,13 @@
 import axios from 'axios';
 
 export const checkCaptcha = async (req, res, next) => {
-  const { token } = req.body;
+  let token = req.header('Authorization');
+  if (!token) {
+    return res.status(403).send('Access Denied');
+  }
+  if (token.startsWith('Bearer ')) {
+    token = token.slice(7, token.length).trimLeft();
+  }
 
   try {
     // Sending secret key and response token to Google Recaptcha API for authentication.
@@ -13,7 +19,13 @@ export const checkCaptcha = async (req, res, next) => {
     if (response.data.success) {
       next();
     } else {
-      return res.status(501).json({ msg: 'Robot 🤖' });
+      return res
+        .status(501)
+        .json({
+          error: response.data['error-codes']
+            ? response.data['error-codes'][0]
+            : 'Robot Caught! 🤖',
+        });
     }
   } catch (error) {
     // Handle any errors that occur during the reCAPTCHA verification process
