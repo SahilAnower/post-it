@@ -19,6 +19,7 @@ Welcome to PostIt! The social media platform for people who love to 🍴 🔁 �
   MONGO_URL= // url to your mongodb cloud database on atlas
   JWT_SECRET= // secret key for creating jwt token of each loggedin user
   PORT= // port for your backend to run - !imp 3301 is currently for this project
+  SECRET_KEY= // server secret key for recaptcha-v2
   ```
 
 ### And, `.env` for frontend
@@ -28,6 +29,7 @@ Welcome to PostIt! The social media platform for people who love to 🍴 🔁 �
   REACT_APP_IS_PROD= // 'true' or 'false'
   REACT_APP_BACKEND_PROD= // prod url of backend
   REACT_APP_BACKEND_DEV= // dev url of backend
+  REACT_APP_SITE_KEY= // client site key for recaptcha-v2
   ```
 
 # Happy Socializing 😁
